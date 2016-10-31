@@ -1,0 +1,38 @@
+#!/bin/sh
+INSTPATH=`dirname $0`
+if [ $# -le 0 ]; then
+	echo "Usage: $0 [-f] [-q] [-T | -t title] [-p (e)psfile] trkfile(.trk)"
+	echo "e373,07trk Graph(XZ,YZ)by each track#"
+	echo "-stp				Change filetype(.stp(rrn))"
+	echo "-t title       Use 'title' as a title of the histogram."
+	echo "-p (e)psfile   Output the histogram to ps/eps file"
+	echo "-q             'Quiet' mode. Terminate Root without any prompt."
+	exit 1
+fi
+
+ROOTFLAG=-l
+TITLE=0
+TITLETEXT=
+FILETYPE=trk
+
+while [ "$1" == "-stp" -o "$1" == "-p" -o "$1" == "-q" -o "$1" == "-t" -o "$1" == "-T" ]; do
+	 if [ "$1" == "-p" ]; then
+	EPSNAME=$2;
+	shift;
+	shift;
+	 elif [ "$1" == "-stp" ]; then
+	FILETYPE="stp"
+	echo "FILETYPE is ${FILETYPE}"
+	shift;
+	 elif [ "$1" == "-t" ]; then
+	TITLE=1;
+	TITLETEXT="$2"
+	shift;
+	shift;
+	 elif [ "$1" == "-q" ]; then
+	ROOTFLAG="$ROOTFLAG -q"
+	shift;
+    fi
+done
+
+root $ROOTFLAG -x "${INSTPATH}/trk2d.C(\"$1\",\"$FILETYPE\",\"$EPSNAME\",$TITLE,\"$TITLETEXT\")"
