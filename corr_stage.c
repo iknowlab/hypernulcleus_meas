@@ -508,7 +508,7 @@ int TrackConnection(FILE *read, FILE *out, FILE *log, char *path){
 
 				/* 修正深度(z)が大きすぎる(over 10micron)場合 */
 				if(STORE[1].Z - Track[line-1].Z >0.0100 || STORE[1].Z - Track[line-1].Z <-0.0100)
-					printf("Coution: Stage.Z was corrected too large in Z%lf at pl%d.\n",STORE[1].Z,pl.curr);
+					printf("Caution: Stage.Z was corrected too large in Z%lf at pl%d.\n",STORE[1].Z,pl.curr);
 
 				/* ステージ移動誤差の積算 */
 				Med.X = Med.X + STORE[0].X - Track[line].X;
