@@ -629,5 +629,5 @@ int TrackConnection(FILE *read, FILE *out, FILE *log, char *path){
 	}	/* while [以降の行を読んでいく] end */
 	
 	/* TrackConnection() 戻り値0（正常終了） */
-	return(0);
+	return 0;
 }
