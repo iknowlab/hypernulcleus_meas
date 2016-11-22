@@ -83,39 +83,49 @@ int main(int argc, char **argv){
 		if(flagship==1)continue;
 
 		//While文で進んだ行だけ解析します(さらにWhileが続くので飛跡毎の解析ができる)
+
 /*
 		for(int k=0;k<4;k++){
 			for(int l=0;l<3;l++){
-				printf("sur value %3.2lf\t",sur[l][k]);		
+				printf("sur. val. %3.2lf\t",sur[l][k]);		
 			}//for
 			printf("\n");
 		}//for
 */
+
 		/* 上下Gelの厚さ */
 		ThickEMu = sqrt((sur[2][0]-sur[2][1])*(sur[2][0]-sur[2][1]));
 		ThickEMd = sqrt((sur[2][2]-sur[2][3])*(sur[2][2]-sur[2][3]));
+
+//		fprintf(stderr,"uSF.:%3.2lf,\tdSF.:%3.2lf\n",0.5/ThickEMu,0.5/ThickEMd);
 
 		/* Shurinkage Factor & Base Thickness */
 		SFu = 0.5/ThickEMu;
 		SFd = 0.5/ThickEMd;
 		BaseValue = sqrt((sur[2][1]-sur[2][2])*(sur[2][1]-sur[2][2]));
 		
+		//SF補正後のzの値を出す
 		for(j=maxj;j<i;j++){
-			//SF補正後のzの値を出す
-			if(timpo[j].z >= sur[2][3] && timpo[j].z <= sur[2][2])	// if in the DownGel
+			/* 1umの余裕を設ける */
+			if((timpo[j].z > (sur[2][3] - 0.001)) && (timpo[j].z < (sur[2][2] + 0.001)))// if in the DownGel
 				timpo[j].sz = (timpo[j].z-sur[2][3])*SFd;
-			else if(timpo[j].z >= sur[2][1] && timpo[j].z <=sur[2][0])	// if in the UpGel
+			if((timpo[j].z > (sur[2][1] - 0.001)) && (timpo[j].z < (sur[2][0] + 0.001)))// if in the UpGel
 				timpo[j].sz = 0.5 + BaseValue + (timpo[j].z-sur[2][1])*SFu;
-
+		}
+		for(j=maxj;j<i;j++){
 			//SF補正後のzに表面を変換
 			if(( (int)(timpo[j].emlpos*10.0) )==30){
-				sur[2][3]=timpo[j].sz;}
+				sur[2][3]=timpo[j].sz;
+//				std::cout << sur[2][3] << std::endl;}				
 			if(( (int)(timpo[j].emlpos*10.0) )==20){
-				sur[2][2]=timpo[j].sz;}	
+				sur[2][2]=timpo[j].sz;	
+//				std::cout << sur[2][2] << std::endl;}				
 			if(( (int)(timpo[j].emlpos*10.0) )==10){
-				sur[2][1]=timpo[j].sz;}
+				sur[2][1]=timpo[j].sz;
+//				std::cout << sur[2][1] << std::endl;}				
 			if(( (int)(timpo[j].emlpos*10.0) )== 0){
-				sur[2][0]=timpo[j].sz;}
+				sur[2][0]=timpo[j].sz;
+//				std::cout << sur[2][0] << std::endl;}				
 
 		}//for
 
