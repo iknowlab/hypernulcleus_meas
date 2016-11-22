@@ -116,17 +116,20 @@ int main(int argc, char **argv){
 			//SF補正後のzに表面を変換
 			if(( (int)(timpo[j].emlpos*10.0) )==30){
 				sur[2][3]=timpo[j].sz;
-//				std::cout << sur[2][3] << std::endl;}				
+//				std::cout << sur[2][3] << std::endl;
+				}				
 			if(( (int)(timpo[j].emlpos*10.0) )==20){
 				sur[2][2]=timpo[j].sz;	
-//				std::cout << sur[2][2] << std::endl;}				
+//				std::cout << sur[2][2] << std::endl;
+				}				
 			if(( (int)(timpo[j].emlpos*10.0) )==10){
 				sur[2][1]=timpo[j].sz;
-//				std::cout << sur[2][1] << std::endl;}				
+//				std::cout << sur[2][1] << std::endl;
+				}				
 			if(( (int)(timpo[j].emlpos*10.0) )== 0){
 				sur[2][0]=timpo[j].sz;
-//				std::cout << sur[2][0] << std::endl;}				
-
+//				std::cout << sur[2][0] << std::endl;
+				}				
 		}//for
 
 		/* Track Angle1 (phai)*/

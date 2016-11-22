@@ -17,7 +17,7 @@ int main(){
 	int count;	/* 項目数 */
 	int select;	/* ユーザー選択 */
 	int selfile;	/* ユーザー指定File */
-	int DownBaseSurf,;	/* ベースと下流の境界数 */
+	int DownBaseSurf;	/* ベースと下流の境界数 */
 	int UpBaseSurf;		/* ベースと上流の境界数 */
 	int tr;	/* track number */
 	int pl;	/* plate number */
