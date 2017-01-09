@@ -58,12 +58,13 @@ void output(FILE *fp, int tr, int pl, double pos, double posx, double posy, doub
 }
 
 /* 関数定義main()関数以降に記述 */
-int ProcessFrame(char*, char*);
+int ProcessFrame(char*, char*, int);
 
 int main(){
 	int loop;	/* ループカウンタ */
 	int count;	/* 項目数 */
 	int select;	/* ユーザー選択 */
+	int run; /* emulsion type */
 	int selfile;	/* ユーザー指定File */
 	int flag;	/* 処理課程の分岐 used like Boolean */
 	int result;	/* 関数処理結果 */
@@ -138,6 +139,11 @@ int main(){
 			continue;
 		}
 		
+		/* emulsion run number 1 or 2 */
+		printf("[Select emlsion type run1 or run2]\n");
+		printf("run1(base50um)\t1\nrun2(base40um)\t2\t");
+		scanf("%d", &run);
+				
 		/* １度だけ処理してループ終了 */
 		break;
 		
@@ -238,7 +244,7 @@ int main(){
 		printf("\nexecute ... \n\n");
 		
 		/* 1plate毎に歪みを取得し、distortion.vtxを生成 */
-		result = ProcessFrame(fname[selfile], linebuffer);
+		result = ProcessFrame(fname[selfile], linebuffer, run);
 		if(result == 1){
 			printf("[Error] :  Invalid File Format in '%s' !!\nexit soon ...\n", fname[selfile]);
 			exit(0);
@@ -268,7 +274,7 @@ int main(){
 	return 0;
 }
 
-int ProcessFrame(char *fname, char *path){
+int ProcessFrame(char *fname, char *path, int run){
 	int loop;	/* ループカウンタ */
 	int line;	/* 読み取り行数 */
 	int tNum;	/* Beam track本数 */
@@ -490,7 +496,9 @@ int ProcessFrame(char *fname, char *path){
 		/* Shurinkage Factor & Base Thickness */
 		SFu = 0.5/ThickEMu;
 		SFd = 0.5/ThickEMd;
-		BaseValue = sqrt((surface[2][1]-surface[2][2])*(surface[2][1]-surface[2][2]));
+//		BaseValue = sqrt((surface[2][1]-surface[2][2])*(surface[2][1]-surface[2][2]));
+		BaseValue = 0.040;	//40um(run2)
+		if(run==1)BaseValue = 0.050; //50um(run1)
 		
 		/* Base track初期値 */
 		Bx0 = surface[0][3];
