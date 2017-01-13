@@ -445,14 +445,17 @@ int TrackConnection(FILE *read, FILE *out, FILE *log, char *path){
 
 /* ---------------------fixed by inoh------------------------ */
 
-		/*パターンマッチを利用します*/
-		/*Positionの変化が4連続で存在せず(TrigerAB)、かつ全体でz値の変化が10um以下の場合とする(TrigerAB only pokes coution)*/
-		/*飛跡 <-> grain相互間の変化はないと考えているので変化を2um以下とする(TrigerA and B)*/
+		/* パターンマッチを利用します */
+		/* Positionの変化が4連続で存在せず(TrigerAB)、 */
+		/* かつ全体でz値の変化が10um以下の場合とする(TrigerAB only pokes coution) */
+		/* 飛跡 <-> grain相互間の変化はないと考えているので変化を1um以下とする(TrigerA and B) */
 
 		/* triger (A) */
 
-		if(Track[line].Z > Track[line-1].Z-0.002 && Track[line].Z < Track[line-1].Z+0.002 && trigerA!=1
-			&&( ((int)(10.*Position[line-1]))==((int)(10.*Position[line])) )
+		if(Track[line].Z > Track[line-1].Z-0.001 &&
+			 Track[line].Z < Track[line-1].Z+0.001 &&
+			  trigerA!=1 &&
+			   ( ((int)(10.*Position[line-1]))==((int)(10.*Position[line])) )
 			){/* Posの変化がないことを含める(測定点からベースまでの距離が近い時の対処) */
 			trigerA=1;
 
@@ -472,7 +475,7 @@ int TrackConnection(FILE *read, FILE *out, FILE *log, char *path){
 
 		/* triger B */
 
-			if(STORE[1].Z > STORE[0].Z-0.002 && STORE[1].Z < STORE[0].Z+0.002 && trigerA==1){
+			if(STORE[1].Z > STORE[0].Z-0.001 && STORE[1].Z < STORE[0].Z+0.001 && trigerA==1){
 				trigerB=1;
 			}
 			else{
@@ -518,7 +521,7 @@ int TrackConnection(FILE *read, FILE *out, FILE *log, char *path){
 //				Med.Y += STORE[1].Y -Track[line-1].Y;
 
 				/* 深度(z)を修正する場合(over 5micron) */
-				if(STORE[1].Z - Track[line-1].Z >0.0050 || STORE[1].Z - Track[line-1].Z <-0.0050)
+				if(STORE[1].Z - Track[line-1].Z >0.0030 || STORE[1].Z - Track[line-1].Z <-0.0030)
 					Med.Z = Med.Z + STORE[0].Z - Track[line].Z;
 				/* 測定方法は一緒だが、旧式の測定法を用いた場合はこちらを使う */
 //					Med.Z += STORE[1].Z -Track[line-1].Z;
