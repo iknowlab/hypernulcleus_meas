@@ -185,15 +185,19 @@ int main(int argc, char* argv[]){
 //first canvas
 	c1->cd();
 	c1->SetGrid();
-	TText *ta = new TText(-5,-5,buf1);
+//	TText *ta = new TText(-5,-5,buf1);
+	TText *ta = new TText(0,0,buf1);
 	ta->SetTextSize(0.04);
 	ta->SetTextColor(1);
-	TText *tb = new TText(-5,-5.3,buf2);
+//	TText *tb = new TText(-5,-5.3,buf2);
+	TText *tb = new TText(0,0,buf2);
 	tb->SetTextSize(0.04);
 	tb->SetTextColor(1);
 	g[0]->SetMaximum(max+0.1);
-	g[0]->SetMinimum(min-0.1);
-	g[0]->GetXaxis()->SetLimits(min-0.1,max+0.1);
+//	g[0]->SetMinimum(min-0.1);
+	g[0]->SetMinimum(-(max+0.1));
+//	g[0]->GetXaxis()->SetLimits(min-0.1,max+0.1);
+	g[0]->GetXaxis()->SetLimits(-(max+0.1),max+0.1);
 	g[0]->SetTitle("TrackConnect:Grain-Grain");
 	g[0]->GetXaxis()->SetTitle("dX[#mum]");
 	g[0]->GetYaxis()->SetTitle("dY[#mum]");
@@ -214,8 +218,10 @@ int main(int argc, char* argv[]){
 	td->SetTextSize(0.04);
 	td->SetTextColor(1);
 	g[1]->SetMaximum(max+0.1);
-	g[1]->SetMinimum(min-0.1);
-	g[1]->GetXaxis()->SetLimits(min-0.1,max+0.1);
+//	g[1]->SetMinimum(min-0.1);
+	g[1]->SetMinimum(-(max+0.1));
+//	g[1]->GetXaxis()->SetLimits(min-0.1,max+0.1);
+	g[1]->GetXaxis()->SetLimits(-(max+0.1),max+0.1);
 	g[1]->SetTitle("TrackConnect:Track-Track");
 	g[1]->GetXaxis()->SetTitle("dX[#mum]");
 	g[1]->GetYaxis()->SetTitle("dY[#mum]");
