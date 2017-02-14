@@ -5,8 +5,8 @@
 #include <string>
 #include <math.h>
 #include <stdlib.h>
-/*make 2015-09-18.inoh*/
-/*repair 2015-10-14.inoh*/
+/* make 2015-09-18.inoh */
+/* repair 2017-2-14.inoh */
 /* 文字化けでコメントが死にました */
 /* step毎に区切って2nddiffを求める */
 /* 2つのデータが出力される */
@@ -57,8 +57,9 @@ int main(int argc, char **argv){
 	int maxk=0;
 	int flag=0;
 	int trkcount=0;//debug
-	double sur[3][4],step,mean,delta;
+	double sur[3][4],step,mean,delta,mean_d;
 	mean = 0.0;
+	mean_d = 0.0;
 	delta = 0.0;
 	//rms.dat -> clean mode
 	double cleanmax = 1.0e-4;
@@ -67,10 +68,17 @@ int main(int argc, char **argv){
 /* ------read data-------------------------- */
 	if(argc < 3)readerror();
 	std::ifstream data(argv[1]);
+	if(!data){
+		std::cerr << "read error!" << argv[1] << std::endl;
+		exit(1);
+	}//if
+
 	std::string str;
 	//read step(micron)
 	step = atof(argv[2]);
 	
+	std::cerr << "step:" <<step*1000.0 << "micron" << std::endl;
+
 	while(data && getline(data,str)){
 		std::stringstream ss(str);
 		ss >> timpo[i].trkno >> timpo[i].plno >> timpo[i].emlpos >> timpo[i].x >> timpo[i].y >> timpo[i].z ;
@@ -88,13 +96,25 @@ int main(int argc, char **argv){
 		do{
 			//get4POS[(0,1,2:x,y,z)0upsurface,1upbase,2downbase,3downsurface]
 			if(( (int)(timpo[i].emlpos*10.0) )==30){
-				sur[0][3]=timpo[i].x;sur[1][3]=timpo[i].y;sur[2][3]=timpo[i].z;}
+				sur[0][3]=timpo[i].x;
+				sur[1][3]=timpo[i].y;
+				sur[2][3]=timpo[i].z;
+				}
 			if(( (int)(timpo[i].emlpos*10.0) )==20){
-				sur[0][2]=timpo[i].x;sur[1][2]=timpo[i].y;sur[2][2]=timpo[i].z;}	
+				sur[0][2]=timpo[i].x;
+				sur[1][2]=timpo[i].y;
+				sur[2][2]=timpo[i].z;
+				}	
 			if(( (int)(timpo[i].emlpos*10.0) )==10){
-				sur[0][1]=timpo[i].x;sur[1][1]=timpo[i].y;sur[2][1]=timpo[i].z;}
+				sur[0][1]=timpo[i].x;
+				sur[1][1]=timpo[i].y;
+				sur[2][1]=timpo[i].z;
+				}
 			if(( (int)(timpo[i].emlpos*10.0) )== 0){
-				sur[0][0]=timpo[i].x;sur[1][0]=timpo[i].y;sur[2][0]=timpo[i].z;}
+				sur[0][0]=timpo[i].x;
+				sur[1][0]=timpo[i].y;
+				sur[2][0]=timpo[i].z;
+				}
 			i++;
 
 			if(i==timpo.size())break;//EOF
@@ -119,21 +139,23 @@ int main(int argc, char **argv){
 
 /* -------------------calc  step---------------------------------- */
 		for(j=maxj;j<i;j++){
-			if((timpoppo[k].z + step) <= timpo[j].z){//測定値が記録された値+stepを上回ったとき
+	/* 測定値が記録された値+stepを上回ったとき */
+			if((timpoppo[k].z + step) <= timpo[j].z){
 				timpoppo.push_back(wdat);
 				k++;//i12n
 
-				/*numbering*/
+	/*numbering*/
 				timpoppo[k].trkno = timpo[j].trkno;
 				timpoppo[k].plno = timpo[j].plno;
-				timpoppo[k].emlpos = timpo[j].emlpos;//rough
+				timpoppo[k].emlpos = timpo[j].emlpos;
+	/* add a step */
+				timpoppo[k].z = timpoppo[k-1].z + step;
 
-				timpoppo[k].z = timpoppo[k-1].z + step;//plus step
-
-				/* x(or y) * ( z- z(j1) )*tan( (x(j2)-x(j1) )/( z(j2)-z(j1) ) */
-				/* z:step ,j2:present trigered j ,j1:before "j2" */
-				timpoppo[k].x = timpo[j-1].x+(timpoppo[k].z-timpo[j].z)*(timpo[j].x - timpo[j-1].x)/(timpo[j].z-timpo[j-1].z);
-				timpoppo[k].y = timpo[j-1].y+(timpoppo[k].z-timpo[j].z)*(timpo[j].y - timpo[j-1].y)/(timpo[j].z-timpo[j-1].z);
+	/* present x(or y)
+	   ( z- z(j1) )*tan( (x(j2)-x(j1) )/( z(j2)-z(j1) )
+	   z:step ,j2:present trigered j ,j1:before "j2" */
+				timpoppo[k].x = timpo[j-1].x+(timpoppo[k].z-timpo[j-1].z)*(timpo[j].x - timpo[j-1].x)/(timpo[j].z-timpo[j-1].z);
+				timpoppo[k].y = timpo[j-1].y+(timpoppo[k].z-timpo[j-1].z)*(timpo[j].y - timpo[j-1].y)/(timpo[j].z-timpo[j-1].z);
 
 				/* calc an each tangent(step by step) */
 				timpoppo[k].tanx = (timpoppo[k].x - timpoppo[k-1].x) / step;
@@ -180,6 +202,10 @@ int main(int argc, char **argv){
 
 	std::ofstream hage;
 	hage.open(stepfile, std::ios::out);
+	if(!hage){
+		std::cerr << "write error!" << std::endl;
+		exit(1);
+	}//if
 
 	for(i=0;i<t-1;i++){
 		hage << timpoppo[i].trkno << " " << timpoppo[i].plno << " " << timpoppo[i].emlpos << " " << timpoppo[i].x << " " << timpoppo[i].y << " " << timpoppo[i].z << std::endl;
@@ -188,25 +214,51 @@ int main(int argc, char **argv){
 
 //rms.dat
 	char rmsfile[64] = "rms.dat";
+	char linebuffer[256];
 	if(argc > 4)sprintf(rmsfile,"%s",argv[4]);
 	
 	std::ofstream bald;
 	bald.open(rmsfile, std::ios::out);
+	if(!bald){
+		std::cerr << "write error!" << std::endl;
+	}//if
 
 	for(i=0;i<rms.size();i++){
+		if(rms[i].base == 1){
+//			std::cerr << "2nd diff in base (data skip)" << std::endl;
+	/* cut data in a base */
+			continue;
+		}//if
 
-		if(rms[i].base == 1)continue;//base cut
-	/*CAUTION*/
-		if( (rms[i].dx*rms[i].dx) < cleanmin ||(rms[i].dx*rms[i].dx) > cleanmax )continue;//clean mode
+	/* CAUTION (debug : clean mode) */
+		if( (rms[i].dx*rms[i].dx) < cleanmin ||(rms[i].dx*rms[i].dx) > cleanmax ){
+//			std::cerr << "2nd diff data error (data skip)" << std::endl;
+			continue;
+		}//if
 
+	/* convert mm -> micron */
+		rms[i].dx *= 1000.0;
+	/* output file */
 		bald << rms[i].dx << std::endl;
+	/* calc mean */
 		mean +=(rms[i].dx*rms[i].dx);
+	/* count a data */
 		m++;
 
 	}//for
+
 	bald.close();
-	mean=sqrt(mean/(double)m);
-	std::cout << "RMS(X') is " << mean << "\nNmDat are " << m << std::endl;
+
+	/* calc RMS */
+	mean = sqrt(mean/(double)m);
+
+	/* calc STDEV */
+	mean_d = mean/sqrt((double)m);
+	
+	sprintf(linebuffer,"RMS(X'):%2.4lf +- %2.4lf micron\nNumber of Datum: %d\n",mean,mean_d,m);
+	/* output stdout */
+	std::cout << linebuffer;
 
 	return 0;
+
 }//main
