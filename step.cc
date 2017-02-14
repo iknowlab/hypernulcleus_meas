@@ -130,11 +130,10 @@ int main(int argc, char **argv){
 
 				timpoppo[k].z = timpoppo[k-1].z + step;//plus step
 
-				/* present x(or y) *
-				 * ( z- z(j1) )*tan( (x(j2)-x(j1) )/( z(j2)-z(j1) ) */
+				/* x(or y) * ( z- z(j1) )*tan( (x(j2)-x(j1) )/( z(j2)-z(j1) ) */
 				/* z:step ,j2:present trigered j ,j1:before "j2" */
-				timpoppo[k].x = timpo[j-1].x+(timpoppo[k].z-timpo[j-1].z)*(timpo[j].x - timpo[j-1].x)/(timpo[j].z-timpo[j-1].z);
-				timpoppo[k].y = timpo[j-1].y+(timpoppo[k].z-timpo[j-1].z)*(timpo[j].y - timpo[j-1].y)/(timpo[j].z-timpo[j-1].z);
+				timpoppo[k].x = timpo[j-1].x+(timpoppo[k].z-timpo[j].z)*(timpo[j].x - timpo[j-1].x)/(timpo[j].z-timpo[j-1].z);
+				timpoppo[k].y = timpo[j-1].y+(timpoppo[k].z-timpo[j].z)*(timpo[j].y - timpo[j-1].y)/(timpo[j].z-timpo[j-1].z);
 
 				/* calc an each tangent(step by step) */
 				timpoppo[k].tanx = (timpoppo[k].x - timpoppo[k-1].x) / step;
