@@ -18,7 +18,7 @@ CXXFLAGS += -fopenmp
 ROOTFLAGS = `root-config --cflags`
 ROOTLIBS = `root-config --libs`
 
-all: bin root
+all: bin
 bin: $(TARGET)
 
 %: %.C
