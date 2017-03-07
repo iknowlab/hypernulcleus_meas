@@ -175,6 +175,7 @@ int main(int argc, char* argv[]){
 	else max=maxy;
 	if(minx<miny)min=minx;
 	else min=miny;
+	if(min*min>max*max)max=-min;
 	
 //write text
 	sprintf(buf1,"Standard Deviation X:%2.2lf+-%2.2lf[micron]",gstdevx,gerrx);
@@ -185,46 +186,62 @@ int main(int argc, char* argv[]){
 //first canvas
 	c1->cd();
 	c1->SetGrid();
-	TText *ta = new TText(-5,-5,buf1);
+//	TText *ta = new TText(-5,-5,buf1);
+	//TText *ta = new TText(0,0,buf1);
+	TText *ta = new TText();
 	ta->SetTextSize(0.04);
 	ta->SetTextColor(1);
-	TText *tb = new TText(-5,-5.3,buf2);
+//	TText *tb = new TText(-5,-5.3,buf2);
+	//TText *tb = new TText(0,0,buf2);
+	TText *tb = new TText();
 	tb->SetTextSize(0.04);
 	tb->SetTextColor(1);
 	g[0]->SetMaximum(max+0.1);
-	g[0]->SetMinimum(min-0.1);
-	g[0]->GetXaxis()->SetLimits(min-0.1,max+0.1);
+//	g[0]->SetMinimum(min-0.1);
+	g[0]->SetMinimum(-(max+0.1));
+//	g[0]->GetXaxis()->SetLimits(min-0.1,max+0.1);
+	g[0]->GetXaxis()->SetLimits(-(max+0.1),max+0.1);
 	g[0]->SetTitle("TrackConnect:Grain-Grain");
 	g[0]->GetXaxis()->SetTitle("dX[#mum]");
 	g[0]->GetYaxis()->SetTitle("dY[#mum]");
 	g[0]->SetMarkerStyle(20);
 	g[0]->SetMarkerSize(0.6);
 	g[0]->Draw("AP");
-	ta->Draw();
-	tb->Draw();
-	gPad->Modified();
+	//ta->Draw();
+	ta->DrawText(0,0,buf1);
+	//tb->Draw();
+	tb->DrawText(0,0,buf2);
+	c1->Update();	
+//	gPad->Modified();
 	
 //second canvas
 	c2->cd();
 	c2->SetGrid();
-	TText *tc = new TText(-5,-5,buf3);
+	//TText *tc = new TText(-5,-5,buf3);
+	TText *tc = new TText();
 	tc->SetTextSize(0.04);
 	tc->SetTextColor(1);
-	TText *td = new TText(-5,-5.3,buf4);
+	//TText *td = new TText(-5,-5.3,buf4);
+	TText *td = new TText();
 	td->SetTextSize(0.04);
 	td->SetTextColor(1);
 	g[1]->SetMaximum(max+0.1);
-	g[1]->SetMinimum(min-0.1);
-	g[1]->GetXaxis()->SetLimits(min-0.1,max+0.1);
+//	g[1]->SetMinimum(min-0.1);
+	g[1]->SetMinimum(-(max+0.1));
+//	g[1]->GetXaxis()->SetLimits(min-0.1,max+0.1);
+	g[1]->GetXaxis()->SetLimits(-(max+0.1),max+0.1);
 	g[1]->SetTitle("TrackConnect:Track-Track");
 	g[1]->GetXaxis()->SetTitle("dX[#mum]");
 	g[1]->GetYaxis()->SetTitle("dY[#mum]");
 	g[1]->SetMarkerStyle(20);
 	g[1]->SetMarkerSize(0.6);
 	g[1]->Draw("AP");
-	tc->Draw();
-	td->Draw();
-	gPad->Modified();
+	//tc->Draw();
+	tc->DrawText(0,0,buf3);
+	//td->Draw();
+	td->DrawText(0,0,buf4);
+	c2->Update();
+//	gPad->Modified();
 
 //TRint runs.
 	app.Run();
