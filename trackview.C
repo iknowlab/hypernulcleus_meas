@@ -17,7 +17,8 @@
 /* make inoh 2017.2.14 */
 /*下面から飛跡をとらないとエラー吐きますミスったらtocコマンドでごまかして*/
 /*6列構成の.vtx(.trk)ファイルを読み込みます*/
-/*tr# pl# emlpos x y zを読み込んでxz,yz Graphを作ります*/
+/*tr# pl# emlpos x y zを読み込んでxz,xz Graphを作ります*/
+/* 歪み補正前と後で比べるために使います */
 
 void howto(char *filename){
 	std::cerr << "View Track Position" << std::endl;
